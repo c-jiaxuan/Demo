@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFrameTest</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<div class="container">
+		<iframe
+			id="VECTARY_EMBED_ID" 
+			src="https://app.vectary.com/p/2tjui4xHMH7FEI5qXuEd9b" 
+			frameBorder="0" 
+			allow="xr-spatial-tracking; fullscreen;">
+		</iframe>
+	
+		<!-- Video overlay -->
+      	<video class='overlay-video' id="Driver-Video">
+      		<source src="Avatar_DriverSpeech.mp4" type="video/mp4">
+            	Your browser does not support the video tag.
+      	</video>
+		  <video class='overlay-video' id="THX-Video">
+			<source src="Avatar_THXSpeech.mp4" type="video/mp4">
+			  Your browser does not support the video tag.
+		</video>
+		<!-- autoplay only works if video is muted -->
+		<video class='overlay-video' autoplay muted loop id="Default-Video">
+			<source src="Avatar_Idle.mp4" type="video/mp4">
+			  Your browser does not support the video tag.
+		</video>
+	</div>
+	<script type="module">
+		import { VctrModelApi } from "https://app.beta.vectary.com/studio-lite/scripts/api.js";
+		const modelApi = new VctrModelApi("VECTARY_EMBED_ID");
+		await modelApi.init();
+
+		// Get references to the video element and the button
+		const Driver_videoElement = document.getElementById('Driver-Video');
+		const THX_videoElement = document.getElementById('THX-Video');
+		const Default_videoElement = document.getElementById('Default-Video');
+
+		Driver_videoElement.load();
+		THX_videoElement.load();
+		Default_videoElement.load(); 
+
+		Driver_videoElement.pause();
+		Driver_videoElement.currentTime = 0;
+		Driver_videoElement.style.width = '0px';
+		Driver_videoElement.style.height = '0px';
+		THX_videoElement.pause();
+		THX_videoElement.currentTime = 0
+		THX_videoElement.style.width = '0px';
+		THX_videoElement.style.height = '0px';
+		Default_videoElement.play();
+		console.log('Play Default animation');
+		Default_videoElement.style.width = '500px';
+		Default_videoElement.style.height = '500px';
+	  
+		// Example of listening to events sent from Vectary
+		modelApi.addEventListener("Showing_DriverInfo", value => { 
+			Driver_videoElement.play();
+			Driver_videoElement.style.width = '500px';
+			Driver_videoElement.style.height = '500px';
+			THX_videoElement.pause();
+			THX_videoElement.currentTime = 0;
+			THX_videoElement.style.width = '0px';
+			THX_videoElement.style.height = '0px';
+			Default_videoElement.pause();
+			Default_videoElement.currentTime = 0;
+			Default_videoElement.style.width = '0px';
+			Default_videoElement.style.height = '0px';
+		});
+
+		// Example of listening to events sent from Vectary
+		modelApi.addEventListener("Showing_THXInfo", value => { 
+			Driver_videoElement.pause();
+			Driver_videoElement.currentTime = 0;
+			Driver_videoElement.style.width = '0px';
+			Driver_videoElement.style.height = '0px';
+			THX_videoElement.play();
+			THX_videoElement.style.width = '500px';
+			THX_videoElement.style.height = '500px';
+			Default_videoElement.pause();
+			Default_videoElement.currentTime = 0;
+			Default_videoElement.style.width = '0px';
+			Default_videoElement.style.height = '0px';
+		});
+
+		// Example of listening to events sent from Vectary
+		modelApi.addEventListener("Default", value => { 
+			Driver_videoElement.pause();
+			Driver_videoElement.currentTime = 0;
+			Driver_videoElement.style.width = '0px';
+			Driver_videoElement.style.height = '0px';
+			THX_videoElement.pause();
+			THX_videoElement.currentTime = 0
+			THX_videoElement.style.width = '0px';
+			THX_videoElement.style.height = '0px';
+			Default_videoElement.play();
+			Default_videoElement.style.width = '500px';
+			Default_videoElement.style.height = '500px';
+		});
+
+		// When feature description finish, play back default video
+		Driver_videoElement.addEventListener('ended', () => {
+			Driver_videoElement.pause();
+			Driver_videoElement.currentTime = 0;
+			Driver_videoElement.style.width = '0px';
+			Driver_videoElement.style.height = '0px';
+			THX_videoElement.pause();
+			THX_videoElement.currentTime = 0
+			THX_videoElement.style.width = '0px';
+			THX_videoElement.style.height = '0px';
+			Default_videoElement.play();
+			Default_videoElement.style.width = '500px';
+			Default_videoElement.style.height = '500px';
+		})
+
+		THX_videoElement.addEventListener('ended', () => {
+			Driver_videoElement.pause();
+			Driver_videoElement.currentTime = 0;
+			Driver_videoElement.style.width = '0px';
+			Driver_videoElement.style.height = '0px';
+			THX_videoElement.pause();
+			THX_videoElement.currentTime = 0
+			THX_videoElement.style.width = '0px';
+			THX_videoElement.style.height = '0px';
+			Default_videoElement.play();
+			Default_videoElement.style.width = '500px';
+			Default_videoElement.style.height = '500px';
+		})
+	</script>	
+</body>
+</html>
