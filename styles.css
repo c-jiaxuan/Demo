@@ -14,8 +14,8 @@ body {
 /* Container to hold the iframe and video */
 .container {
     position: relative;
-    width: 2160px;  /* Set the desired width */
-    height: 3840px; /* Set the desired height (for the iframe) */
+    width: 100%;  /* Set the desired width */
+    height: 100%; /* Set the desired height (for the iframe) */
     margin: 0 auto;
 }
 
