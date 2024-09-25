@@ -35,8 +35,8 @@ body {
     object-fit: cover;
     bottom: 25px;
     right: 25px;
-    width: 350px;
-    height: 350px;
+    width: 200px;
+    height: 400px;
     z-index: 2;
     opacity: 1;
 }

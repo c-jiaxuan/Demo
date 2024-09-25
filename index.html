@@ -40,7 +40,8 @@
 		// Buffer to store and track which video element is being played
 		var playingVideo = null;
 
-		var AvatarSize = '350px';
+		var AvatarSizeY = '400px';
+		var AvatarSizeX = '200px';
 
 		// Get references to the video element and the button
 		var Driver_videoElement, THX_videoElement, Default_videoElement;
@@ -93,8 +94,8 @@
 			if(videoToPlay != null)
 			{
 				videoToPlay.play();
-				videoToPlay.style.width = AvatarSize;
-				videoToPlay.style.height = AvatarSize;
+				videoToPlay.style.width = AvatarSizeX;
+				videoToPlay.style.height = AvatarSizeY;
 			}
 
 			//Update current playing video
