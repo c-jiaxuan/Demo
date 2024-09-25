@@ -8,9 +8,6 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
-    padding: 20px;
-    width: 1080px;
-    height: 1920px;
 }
 
 /* Container to hold the iframe and video */
@@ -34,12 +31,12 @@ body {
 
 /* Styling for the overlay video anchored at the bottom */
 .overlay-video {
-    position: absolute;
+    position: fixed;
     object-fit: cover;
-    bottom: 22px;
-    right: 22px;
-    width: 500px;
-    height: 500px;
+    bottom: 25px;
+    right: 25px;
+    width: 350px;
+    height: 350px;
     z-index: 2;
     opacity: 1;
 }
