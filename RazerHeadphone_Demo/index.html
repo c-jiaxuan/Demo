@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" 
+    />
+    <title>IFrameTest</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<!-- https://app.vectary.com/p/2tjui4xHMH7FEI5qXuEd9b for the new version -->
+	<iframe
+	id="VECTARY_EMBED_ID"
+	src="https://app.vectary.com/p/2tjui4xHMH7FEI5qXuEd9b"
+	frameborder="0"
+	width="100%"
+	height="1920"
+	></iframe>
+		<!-- Video overlay -->
+      	<video class='overlay-video' id="Driver-Video">
+      		<source src="AvatarVideos/Avatar_DriverSpeech.mp4" type="video/mp4">
+            	Your browser does not support the video tag.
+      	</video>
+		  <video class='overlay-video' id="THX-Video">
+			<source src="AvatarVideos/Avatar_THXSpeech.mp4" type="video/mp4">
+			  Your browser does not support the video tag.
+		</video>
+		<!-- autoplay only works if video is muted -->
+		<video class='overlay-video' autoplay muted loop id="Default-Video">
+			<source src="AvatarVideos/Avatar_Idle.mp4" type="video/mp4">
+			  Your browser does not support the video tag.
+		</video>
+	</div>
+	<script type="module">
+		import { VctrModelApi } from "https://app.beta.vectary.com/studio-lite/scripts/api.js";
+		const modelApi = new VctrModelApi("VECTARY_EMBED_ID");
+		await modelApi.init();
+
+		// Buffer to store and track which video element is being played
+		var playingVideo = null;
+
+		// Size for 1920 x 1080 resolution
+		var AvatarSizeY = '450px';
+		var AvatarSizeX = '250px';
+
+		// Get references to the video element and the button
+		var Driver_videoElement, THX_videoElement, Default_videoElement;
+
+		function init()
+		{
+			//Get all video elements
+			Driver_videoElement = document.getElementById('Driver-Video');
+			THX_videoElement = document.getElementById('THX-Video');
+			Default_videoElement = document.getElementById('Default-Video');
+
+			//Load all the video elements
+			Driver_videoElement.load();
+			THX_videoElement.load();
+			Default_videoElement.load(); 
+
+			//Pause all the video elements
+			pauseVideo(Driver_videoElement);
+			pauseVideo(THX_videoElement);
+			pauseVideo(Default_videoElement);
+
+			//Play idle video
+			playVideo(Default_videoElement);
+		}
+
+		// Pause a video and reduce it's size to 0px
+		function pauseVideo(videoToPause)
+		{
+			if (videoToPause != null)
+			{
+				videoToPause.pause();
+				videoToPause.currentTime = 0;
+				videoToPause.style.width = '0px';
+				videoToPause.style.height = '0px';
+			}
+		}
+
+		// Plays a video and sets the size of the video element to the AvatarSize
+		function playVideo(videoToPlay)
+		{
+			//Check if has current video
+			//If yes => pause that video + resize
+			if(playingVideo != null)
+			{
+				pauseVideo(playingVideo);
+			}
+			//If no => do nothing
+
+			//Play next video + resize
+			if(videoToPlay != null)
+			{
+				videoToPlay.play();
+				videoToPlay.style.width = AvatarSizeX;
+				videoToPlay.style.height = AvatarSizeY;
+			}
+
+			//Update current playing video
+			playingVideo = videoToPlay;
+		}
+
+		// Call the init function to initialize the canvas
+		init();
+	  
+		// Example of listening to events sent from Vectary
+		// Play the Driver speech video when Showing_DriverInfo event is received
+		modelApi.addEventListener("Showing_DriverInfo", value => { 
+			playVideo(Driver_videoElement);
+		});
+
+		// Example of listening to events sent from Vectary
+		// Play the THX speech video when Showing_THXInfo event is received
+		modelApi.addEventListener("Showing_THXInfo", value => { 
+			playVideo(THX_videoElement);
+		});
+
+		// Example of listening to events sent from Vectary
+		// Play the Idle video when Default event is received
+		modelApi.addEventListener("Default", value => { 
+			playVideo(Default_videoElement);
+		});
+
+		// When feature description finish, play back default video
+		Driver_videoElement.addEventListener('ended', () => {
+			playVideo(Default_videoElement)
+		})
+
+		// When feature description finish, play back default video
+		THX_videoElement.addEventListener('ended', () => {
+			playVideo(Default_videoElement)
+		})
+	</script>	
+</body>
+</html>
