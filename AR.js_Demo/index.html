@@ -13,7 +13,10 @@
         <!-- Set up an AR marker -->
         <a-marker preset="hiro">
             <!-- Create an object to display when marker is detected -->
-            <a-box position="0 0.5 0" material="color: red;"></a-box>
+            <a-entity gltf-model="./Giftbox/Giftbox.gtlf"
+                      position="0 0.5 0"
+                      animation-mixer>
+            </a-entity>
         </a-marker>
         <!-- Camera -->
         <a-entity camera></a-entity>
