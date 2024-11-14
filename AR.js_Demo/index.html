@@ -8,7 +8,7 @@
 </head>
 <body style="margin: 0; overflow: hidden;">
     <!-- AR.js scene setup -->
-    <a-scene embedded arjs>
+    <a-scene embedded arjs="sourceType: webcam; sourceVideo: environment;">
         <!-- Set up an AR marker -->
         <a-marker preset="hiro">
             <!-- Create an object to display when marker is detected -->
