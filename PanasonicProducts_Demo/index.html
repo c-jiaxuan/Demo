@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta 
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" 
+    />
+    <title>IFrameTest</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+	<iframe
+	id="VECTARY_EMBED_ID"
+	src="https://app.vectary.com/p/1vIcZyaaHr94FxGnfhY94T"
+	frameborder="0"
+	width="100%"
+	height="3840"
+	></iframe>
+		<!-- Video overlay -->
+      	<video class='overlay-video' id="Fridge-Video">
+      		<source src="./AvatarVideos/Panasonic_Fridge.mp4" type="video/mp4">
+            	Your browser does not support the video tag.
+      	</video>
+		<video class='overlay-video' id="Fridge-FreshSafe-Video">
+			<source src="./AvatarVideos/Fridge_FreshSafe_Speech.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+		</video>
+		<video class='overlay-video' id="Fridge-Nanoex-Video">
+		  	<source src="./AvatarVideos/Fridge_Nanoex_Speech.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+	  	</video>
+		<video class='overlay-video' id="Fridge-PrimeFreeze-Video">
+			<source src="./AvatarVideos/Fridge_PrimeFreeze_Speech.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+		</video>
+		<video class='overlay-video' id="Aircon-Nanoex-Video">
+			<source src="./AvatarVideos/Etherea_Nanoex.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+		</video>
+	  	<video class='overlay-video' id="Aircon-SmartControl-Video">
+		  	<source src="./AvatarVideos/Etherea_SmartControl.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+	  	</video>
+	  	<video class='overlay-video' id="Aircon-Video">
+			<source src="./AvatarVideos/Panasonic_Etherea.mp4" type="video/mp4">
+		 		Your browser does not support the video tag.
+		</video>
+		<!-- autoplay only works if video is muted -->
+		<video class='overlay-video' autoplay muted loop id="Default-Video">
+			<source src="./AvatarVideos/Panasonic_Idle.mp4" type="video/mp4">
+				Your browser does not support the video tag.
+		</video>
+	</div>
+	<script type="module">
+		import { VctrModelApi } from "https://app.beta.vectary.com/studio-lite/scripts/api.js";
+		const modelApi = new VctrModelApi("VECTARY_EMBED_ID");
+		await modelApi.init();
+
+		// Buffer to store and track which video element is being played
+		var playingVideo = null;
+
+		var AvatarSizeY = '750px';
+		var AvatarSizeX = '350px';
+
+		// Get references to the video element and the button
+		var Fridge_videoElement, 
+			Fridge_FreshSafe_videoElement, 
+			Fridge_Nanoex_videoElement, 
+			Fridge_PrimeFreeze_videoElement, 
+			Aircon_videoElement,
+			Aircon_Nanoex_videoElement,
+			Aircon_SmartControl_videoElement,
+			Default_videoElement;
+
+		function init()
+		{
+			//Get all video elements
+			Fridge_videoElement 			= document.getElementById('Fridge-Video');
+			Fridge_FreshSafe_videoElement 	= document.getElementById('Fridge-FreshSafe-Video');
+			Fridge_Nanoex_videoElement 		= document.getElementById('Fridge-Nanoex-Video');
+			Fridge_PrimeFreeze_videoElement = document.getElementById('Fridge-PrimeFreeze-Video');
+
+			Aircon_videoElement					= document.getElementById('Aircon-Video');
+			Aircon_Nanoex_videoElement			= document.getElementById('Aircon-Nanoex-Video');
+			Aircon_SmartControl_videoElement 	= document.getElementById('Aircon-SmartControl-Video');
+
+			Default_videoElement = document.getElementById('Default-Video');
+
+			//Load all the video elements
+
+			Fridge_videoElement.load();		
+			Fridge_FreshSafe_videoElement.load(); 	
+			Fridge_Nanoex_videoElement.load(); 		
+			Fridge_PrimeFreeze_videoElement.load(); 
+
+			Aircon_videoElement.load();					
+			Aircon_Nanoex_videoElement.load();			
+			Aircon_SmartControl_videoElement.load();	
+
+			Default_videoElement.load(); 
+
+			//Pause all the video elements
+			pauseVideo(Fridge_videoElement);
+			pauseVideo(Fridge_FreshSafe_videoElement);
+			pauseVideo(Fridge_Nanoex_videoElement);
+			pauseVideo(Fridge_PrimeFreeze_videoElement);
+
+			pauseVideo(Aircon_videoElement);
+			pauseVideo(Aircon_Nanoex_videoElement);
+			pauseVideo(Aircon_SmartControl_videoElement);
+
+			pauseVideo(Default_videoElement);
+
+			//Play idle video
+			playVideo(Default_videoElement);
+		}
+
+		// Pause a video and reduce it's size to 0px
+		function pauseVideo(videoToPause)
+		{
+			if (videoToPause != null)
+			{
+				videoToPause.pause();
+				videoToPause.currentTime = 0;
+				videoToPause.style.width = '0px';
+				videoToPause.style.height = '0px';
+			}
+		}
+
+		// Plays a video and sets the size of the video element to the AvatarSize
+		function playVideo(videoToPlay)
+		{
+			//Check if has current video
+			//If yes => pause that video + resize
+			if(playingVideo != null)
+			{
+				pauseVideo(playingVideo);
+			}
+			//If no => do nothing
+
+			//Play next video + resize
+			if(videoToPlay != null)
+			{
+				videoToPlay.play();
+				videoToPlay.style.width = AvatarSizeX;
+				videoToPlay.style.height = AvatarSizeY;
+			}
+
+			//Update current playing video
+			playingVideo = videoToPlay;
+		}
+
+		// Call the init function to initialize the canvas
+		init();
+	  
+		// Example of listening to events sent from Vectary
+		// Play the Fridge speech video when Fridge event is received
+		modelApi.addEventListener("Fridge", value => { 
+			console.log("Playing Fridge_videoElement video");
+			playVideo(Fridge_videoElement);
+		});
+
+		modelApi.addEventListener("Fridge_NanoeX", value => { 
+			console.log("Playing Fridge_Nanoex_videoElement video");
+			playVideo(Fridge_Nanoex_videoElement);
+		});
+
+		modelApi.addEventListener("Fridge_FreshSafe", value => { 
+			console.log("Playing Fridge_FreshSafe_videoElement video");
+			playVideo(Fridge_FreshSafe_videoElement);
+		});
+
+		modelApi.addEventListener("Fridge_PrimeFreeze", value => { 
+			console.log("Playing Fridge_PrimeFreeze_videoElement video");
+			playVideo(Fridge_PrimeFreeze_videoElement);
+		});
+
+		modelApi.addEventListener("Aircon_Nanoex", value => { 
+			console.log("Playing Aircon_Nanoex_videoElement video");
+			playVideo(Aircon_Nanoex_videoElement);
+		});
+
+		modelApi.addEventListener("Aircon_SmartControl", value => { 
+			console.log("Playing Aircon_SmartControl_videoElement video");
+			playVideo(Aircon_SmartControl_videoElement);
+		});
+
+		modelApi.addEventListener("Aircon", value => { 
+			console.log("Playing Aircon_videoElement video");
+			playVideo(Aircon_videoElement);
+		});
+
+		// Example of listening to events sent from Vectary
+		// Play the Idle video when Default event is received
+		modelApi.addEventListener("Default", value => { 
+			console.log("Playing Default_videoElement video");
+			playVideo(Default_videoElement);
+		});
+
+		// Get all video elements
+		const videos = document.getElementsByTagName("video");
+
+		console.log("Number of videos: " + videos.length);
+
+		// Loop through each video element
+		for (let video of videos) {
+			console.log("Looping...");
+			// Set the loop attribute to true
+			if (video.id != "Default-Video") {
+				video.addEventListener('ended', () => {
+					console.log("Video finished playing, playing Default video");
+					playVideo(Default_videoElement)	
+				})
+			}
+		}
+	</script>	
+</body>
+</html>

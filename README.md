@@ -12,3 +12,5 @@ This is a demo done using AR.js to test the capabilities of the AR.js library fo
 web applications
 https://ar-js-org.github.io/AR.js/
 
+## PanasonicProducst_Demo
+This is a demo for showcasing Panasonic prodcuts. Features a fridge and an aircon with video avatar for holographic display
