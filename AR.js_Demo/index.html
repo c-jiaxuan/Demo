@@ -9,13 +9,19 @@
 <body style="margin: 0; overflow: hidden;">
     <!-- AR.js scene setup -->
     <a-scene embedded arjs="sourceType: webcam; sourceVideo: environment;">
+        <a-assets>
+                <a-asset-item
+                    id="animated-asset"
+                    src="Studio/assets/asset.gltf"
+                ></a-asset-item>
+        </a-assets>
         <!-- Set up an AR marker -->
         <a-marker preset="hiro">
             <!-- Create an object to display when marker is detected -->
             <a-box position="0 0.5 0" material="color: red;"></a-box>
-<!--             <a-entity gltf-model="https://cdn.glitch.global/83556fb1-c6b0-4a34-8d97-8d6f4cb7b7d6/animated_model.glb?v=1665542158050" 
-                scale="0.5 0.5 0.5" 
-                animation-mixer> -->
+            <a-entity gltf-model="#animated-asset"
+                scale="5.455321817872626 5.455321817872626 5.455321817872626" 
+                animation-mixer="loop: repeat">
             </a-entity>
         </a-marker>
         <!-- Camera -->
