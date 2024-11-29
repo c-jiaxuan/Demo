@@ -60,6 +60,9 @@
 		// Buffer to store and track which video element is being played
 		var playingVideo = null;
 
+		const iframe = document.getElementById('VECTARY_EMBED_ID');
+		var iframe_height = '3840px';
+
 		var AvatarSizeY = '750px';
 		var AvatarSizeX = '350px';
 
@@ -73,6 +76,17 @@
 			Aircon_SmartControl_videoElement,
 			Default_videoElement;
 
+		// Function to parse query parameters from the URL
+		// param is the name of the variable to look for
+        function getQueryParam(param) {
+			// The URLSearchParams interface defines utility methods to work with the query string of a URL.
+			// The window.location.search property returns the query string part of a URL, including the question mark (?).
+			// This is useful for extracting parameters passed in the URL.
+            const urlParams = new URLSearchParams(window.location.search);
+			console.log(urlParams.get(param));
+            return urlParams.get(param);
+        }
+		
 		function init()
 		{
 			//Get all video elements
@@ -112,8 +126,18 @@
 
 			pauseVideo(Default_videoElement);
 
-			//Play idle video
+			// Play idle video
 			playVideo(Default_videoElement);
+
+			// Get the iframe height from the url params
+			iframe_height = getQueryParam('iframe_height');
+
+			if (iframe_height) {
+            	iframe.style.height = `${iframe_height}px`;
+        	} else {
+            	// Set a default height if no parameter is provided
+            	iframe.style.height = '3840px';	
+        	}
 		}
 
 		// Pause a video and reduce it's size to 0px

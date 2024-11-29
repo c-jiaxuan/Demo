@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concierge Q&A</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 8px;
+            display: flex;
+            justify-content: right;
+            align-items: center;
+            height: 100vh;
+            background: #f4f4f4;
+        }
+        .container {
+            width: 35%;
+            max-width: 400px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+        .checkbox-group {
+            margin: 10px 0;
+        }
+        button {
+            padding: 10px 15px;
+            margin: 5px 0;
+            width: 100%;
+            background: #e92222;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ab1a1a;
+        }
+        .hidden {
+            display: none;
+        }
+        .back-button {
+            background: #6c757d;
+        }
+        .back-button:hover {
+            background: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Step 1: Have you been here before -->
+        <div id="step-1">
+            <p class="question">Have you been to this experience before?</p>
+            <button onclick="handleExperience('yes')">Yes</button>
+            <button onclick="handleExperience('no')">No</button>
+        </div>
+
+        <!-- Step 2: Select Age Group -->
+        <div id="step-2" class="hidden">
+            <p class="question">What is your age group?</p>
+            <button onclick="handleAgeGroup('Child')">Under 18</button>
+            <button onclick="handleAgeGroup('Adult')">18-64</button>
+            <button onclick="handleAgeGroup('Senior')">65+</button>
+            <button class="back-button" onclick="goBackToExperience()">Back</button>
+        </div>
+
+        <!-- Step 3: Select Interests -->
+        <div id="step-3" class="hidden">
+            <p class="question">What are your interests?</p>
+            <div class="checkbox-group">
+                <label><input type="checkbox" value="Tang Shipwreck" class="interests"> Tang Shipwreck</label><br>
+                <label><input type="checkbox" value="Maritime Trade" class="interests"> Maritime Trade</label><br>
+                <label><input type="checkbox" value="Court and Company" class="interests"> Court and Company</label><br>
+                <label><input type="checkbox" value="Ancient Religions" class="interests"> Ancient Religions</label>
+            </div>
+            <button onclick="handleInterests()">Next</button>
+            <button class="back-button" onclick="goBackToAgeGroup()">Back</button>
+        </div>
+
+        <!-- Step 4: Select Preferred Time Slot -->
+        <div id="step-4" class="hidden">
+            <p class="question">What is your preferred time slot?</p>
+            <div class="checkbox-group">
+                <label><input type="checkbox" value="Morning" class="time-slot"> Morning</label><br>
+                <label><input type="checkbox" value="Afternoon" class="time-slot"> Afternoon</label><br>
+                <label><input type="checkbox" value="Evening" class="time-slot"> Evening</label><br>
+            </div>
+            <button onclick="handleTimeSlot()">Submit</button>
+            <button class="back-button" onclick="goBackToInterests()">Back</button>
+        </div>
+
+        <!-- Result Page -->
+        <div id="result" class="hidden">
+            <p class="question" id="output-message"></p>
+            <button onclick="restart()">Start Over</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
