@@ -12,7 +12,7 @@
 <body>
 	<iframe
 	id="VECTARY_EMBED_ID"
-	src="https://app.vectary.com/p/1vIcZyaaHr94FxGnfhY94T"
+	src="https://app.vectary.com/p/4IcamhSNEdV0fSfKFi3nfR"
 	frameborder="0"
 	width="100%"
 	height="3840"
@@ -63,8 +63,8 @@
 		const iframe = document.getElementById('VECTARY_EMBED_ID');
 		var iframe_height = '3840px';
 
-		var AvatarSizeY = '375px';
-		var AvatarSizeX = '175px';
+		var AvatarSizeY = '750px';
+		var AvatarSizeX = '350px';
 
 		// Get references to the video element and the button
 		var Fridge_videoElement, 
@@ -89,6 +89,27 @@
 		
 		function init()
 		{
+			// Get the iframe height from the url params
+			iframe_height = getQueryParam('iframe_height');
+
+			if (iframe_height) {
+            	iframe.style.height = `${iframe_height}px`;
+				// Reduce the size of the Avatar Videos
+				AvatarSizeY = '375px';
+				AvatarSizeX = '150px';
+
+				// Send event to Vectary to swap UI package
+				modelApi.dispatchEvent('2k', true);
+
+				console.log("2K resolution selected");
+        	} else {
+            	// Set a default height if no parameter is provided
+            	iframe.style.height = '3840px';
+				modelApi.dispatchEvent('2k', false);
+
+				console.log("4K(Default) resolution selected");
+        	}
+
 			//Get all video elements
 			Fridge_videoElement 			= document.getElementById('Fridge-Video');
 			Fridge_FreshSafe_videoElement 	= document.getElementById('Fridge-FreshSafe-Video');
@@ -128,16 +149,6 @@
 
 			// Play idle video
 			playVideo(Default_videoElement);
-
-			// Get the iframe height from the url params
-			iframe_height = getQueryParam('iframe_height');
-
-			if (iframe_height) {
-            	iframe.style.height = `${iframe_height}px`;
-        	} else {
-            	// Set a default height if no parameter is provided
-            	iframe.style.height = '3840px';	
-        	}
 		}
 
 		// Pause a video and reduce it's size to 0px
