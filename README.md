@@ -14,3 +14,19 @@ https://ar-js-org.github.io/AR.js/
 
 ## PanasonicProducst_Demo
 This is a demo for showcasing Panasonic prodcuts. Features a fridge and an aircon with video avatar for holographic display
+
+## Concierge Web Demo / Screen Layout Demo
+
+This is a demo for AI Avatar linked with LLMs
+
+### Concierge Web Demo
+
+For concierge use case featuring 3 sub menus
+ - Tour Creation
+ - Avatar Chat
+ - Wayfinding
+
+### Screen Layout Demo
+
+Screen shown after each waypoint in a guided tour
+ - Avatar for Q&A section
