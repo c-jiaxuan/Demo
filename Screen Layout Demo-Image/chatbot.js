@@ -156,8 +156,8 @@ function botResponse(response) {
         bot_reply = botMessages["pagoda_response"];
     }
     else {
-        bot_reply = getRandomElement(botMessages["default_msgs"]);
-        // var response = postAPI(response, bot_tone);
+        // bot_reply = getRandomElement(botMessages["default_msgs"]);
+        var response = postAPI(response, bot_tone);
         prompt = false;
     }
 
