@@ -41,7 +41,8 @@ async function generateClientToken() {
     DATA.clientToken = result.token;
     DATA.appId = result.appId;
   } else {
-    console.log('generateClientToken Error:', result);
+    console.log('generateVerifiedToken Error: ' + result);
+    alert(JSON.stringify(result));
   }
 }
 
