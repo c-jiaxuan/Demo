@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concierge</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo-container">
+            <img src="./Images/ACM_Logo.png" alt="Logo">
+        </div>
+    </header>
+    <button id="main-menu-button" onclick="goToMainMenu(); shiftContainer(false)" class="hidden">Main Menu</button>
+    <!-- <div id="AIPlayerWrapper"></div> -->
+    <!-- Modal for Wayfinding -->
+    <div id="avatar-placeholder" class="avatar-placeholder-class">
+        <img src="./Images/Avatar.png">
+    </div>
+    <div id="wayfinding-modal" class="modal hidden">
+        <div class="modal-content">
+            <iframe id="wayfinding-iframe" href="https://www.mappedin.com/" title="Mappedin Map" name="Mappedin Map" 
+                    allow="clipboard-write 'self' https://app.mappedin.com; web-share 'self' https://app.mappedin.com" 
+                    scrolling="no" width="100%" height="1300" frameborder="0" style="border:0">
+            </iframe>
+            <button class="close-button" onclick="setDestination()">Set destination</button>
+            <button class="close-button" onclick="closeWayfinding()">Close</button>
+        </div>
+    </div>
+    <div class="user_options">
+        <div id="chat-container" class="chat-container hidden">
+            <div id="chat-history-container" class="chat-history-container">
+            <!-- Messages appear here -->
+            </div>
+            <div class="input-area-container">
+                <input id="input" class="input-area" type="text" size="200" maxlength="200" placeholder="Type your message...">
+                <button id="send-button" class="send-button" onclick=sendMessage()>
+                <img src="./Images/Control_Signs/Send.png" alt="Snow">
+                </button>
+            </div>
+            <div id="speak-button-container" class="speak-button-container">
+                <button class="button button1">
+                <img src="./Images/Control_Signs/Mic-Icon.png" alt="Snow">
+                Speak with AI</button>
+            </div>
+        </div>
+        <div id="container" class="container">
+            <!-- Landing Screen -->
+            <div id="landing-screen">
+                <p class="question">Welcome! What would you like to do today?</p>
+                <button onclick="startGuidedTour(); tourSetupSpeak(0); shiftContainer(true)">Guided Tour Setup</button>
+                <button onclick="showChatInterface(); beginChat()">Ask AI</button>
+                <button onclick="openWayfinding()">Wayfinding Page</button>
+            </div>
+
+            <!-- Step 1: Have you been here before -->
+            <div id="step-1" class="hidden">
+                <p class="question">Have you been to this experience before?</p>
+                <button onclick="handleExperience('yes'); tourSetupSpeak(1)">Yes</button>
+                <button onclick="handleExperience('no'); tourSetupSpeak(1)">No</button>
+            </div>
+
+            <!-- Other steps remain unchanged -->
+            <div id="step-2" class="hidden">
+                <p class="question">What is your age group?</p>
+                <button onclick="handleAgeGroup('Child'); tourSetupSpeak(2)">Under 18</button>
+                <button onclick="handleAgeGroup('Adult'); tourSetupSpeak(2)">18-64</button>
+                <button onclick="handleAgeGroup('Senior'); tourSetupSpeak(2)">65+</button>
+                <button class="back-button" onclick="goBackToExperience()">Back</button>
+            </div>
+
+            <div id="step-3" class="hidden">
+                <p class="question">What are your interests?</p>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="Tang Shipwreck" class="interests"> Tang Shipwreck</label><br>
+                    <label><input type="checkbox" value="Maritime Trade" class="interests"> Maritime Trade</label><br>
+                    <label><input type="checkbox" value="Court and Company" class="interests"> Court and Company</label><br>
+                    <label><input type="checkbox" value="Ancient Religions" class="interests"> Ancient Religions</label>
+                </div>
+                <button onclick="handleInterests(); tourSetupSpeak(3)">Next</button>
+                <button class="back-button" onclick="goBackToAgeGroup()">Back</button>
+            </div>
+
+            <div id="step-4" class="hidden">
+                <p class="question">What is your preferred time slot?</p>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="Morning" class="time-slot"> Morning</label><br>
+                    <label><input type="checkbox" value="Afternoon" class="time-slot"> Afternoon</label><br>
+                    <label><input type="checkbox" value="Evening" class="time-slot"> Evening</label><br>
+                </div>
+                <button onclick="handleTimeSlot(); tourSetupSpeak(4)">Submit</button>
+                <button class="back-button" onclick="goBackToInterests()">Back</button>
+            </div>
+
+            <div id="result" class="hidden">
+                <p class="question" id="output-message"></p>
+                <button onclick="restart(); tourSetupSpeak(0);">Start Over</button>
+            </div>
+        </div>
+        <div id="banner-image"  class="imageContainer">
+            <div class="text-overlay">Ongoing Exhibitions</div>
+            <img alt="banner-image" src="./Images/banner_1.png" width="100%">
+        </div>
+    </div>
+    <script
+    type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js">
+    </script>
+    <script src="https://cdn-aihuman.deepbrainai.io/sdk/web/aiPlayer-1.5.3.min.js"></script>
+    <script src="script.js"></script>
+    <script src="survey.js"></script>
+    <script src="chatbot.js"></script>
+    <script src="wayfinding.js"></script>
+
+</body>
+</html>
