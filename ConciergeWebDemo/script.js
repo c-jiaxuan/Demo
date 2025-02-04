@@ -41,8 +41,7 @@ async function generateClientToken() {
     DATA.clientToken = result.token;
     DATA.appId = result.appId;
   } else {
-    console.log('generateVerifiedToken Error: ' + result);
-    alert(JSON.stringify(result));
+    console.log('generateVerifiedToken Error: ' + JSON.stringify(result));
   }
 }
 
@@ -54,8 +53,7 @@ async function generateVerifiedToken() {
     DATA.tokenExpire = result.tokenExpire;
     DATA.defaultAI = result.defaultAI;
   } else {
-    console.log('generateVerifiedToken Error: ' + result);
-    alert(JSON.stringify(result));
+    console.log('generateVerifiedToken Error: ' + JSON.stringify(result));
   }
 }
 
