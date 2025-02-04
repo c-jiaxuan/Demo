@@ -55,6 +55,7 @@ async function generateVerifiedToken() {
     DATA.defaultAI = result.defaultAI;
   } else {
     console.log('generateVerifiedToken Error: ' + result);
+    alert(JSON.stringify(result));
   }
 }
 
