@@ -37,7 +37,7 @@ body::before {
     position: fixed;
         height: 2200px;
         width: 1500px;
-        bottom: -100%;
+        top: 0;
         left: -10%;
     }
 
