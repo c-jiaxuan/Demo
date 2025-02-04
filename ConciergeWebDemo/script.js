@@ -32,28 +32,49 @@ async function initSample() {
 // =========================== AIPlayer Setup ================================ //
 
 async function generateClientToken() {
-  const result = await makeRequest(
-    'GET',
-    `${authServer}/api/aihuman/generateClientToken?appId=${appId}&userKey=${userKey}`,
-  );
+  console.log("Requesting client token...");
+  
+  try {
+    const result = await makeRequest(
+      'GET',
+      `${authServer}/api/aihuman/generateClientToken?appId=${appId}&userKey=${userKey}`,
+    );
 
-  if (result?.succeed) {
-    DATA.clientToken = result.token;
-    DATA.appId = result.appId;
-  } else {
-    console.log('generateClientToken Error:', result);
+    console.log("generateClientToken Response:", result);
+
+    if (result?.succeed) {
+      DATA.clientToken = result.token;
+      DATA.appId = result.appId;
+    } else {
+      console.error("generateClientToken Error:", JSON.stringify(result));
+    }
+  } catch (error) {
+    console.error("Request failed in generateClientToken():", error);
   }
 }
 
-async function generateVerifiedToken() {
-  const result = await AI_PLAYER.generateToken({ appId: DATA.appId, token: DATA.clientToken });
 
-  if (result?.succeed) {
-    DATA.verifiedToken = result.token;
-    DATA.tokenExpire = result.tokenExpire;
-    DATA.defaultAI = result.defaultAI;
-  } else {
-    console.log('generateVerifiedToken Error: ' + result);
+async function generateVerifiedToken() {
+  console.log("Attempting to generate verified token with:", DATA);
+
+  if (!DATA.clientToken) {
+    console.log("Missing clientToken! Regenerating...");
+    await generateClientToken();
+  }
+
+  try {
+    const result = await AI_PLAYER.generateToken({ appId: DATA.appId, token: DATA.clientToken });
+
+    if (result?.succeed) {
+      DATA.verifiedToken = result.token;
+      DATA.tokenExpire = result.tokenExpire;
+      DATA.defaultAI = result.defaultAI;
+      console.log("Verified token generated successfully:", DATA.verifiedToken);
+    } else {
+      console.error("generateVerifiedToken Error:", JSON.stringify(result));
+    }
+  } catch (error) {
+    console.error("Request failed in generateVerifiedToken():", error);
   }
 }
 
