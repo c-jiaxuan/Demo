@@ -189,7 +189,7 @@ body::before {
     position: fixed;
     height: 2200px;
     width: 1500px;
-    bottom: -115%;
+    top: 0;
     left: -15%;
 }
 
