@@ -41,15 +41,12 @@ async function generateClientToken() {
   if (result?.succeed) {
     DATA.clientToken = result.token;
     DATA.appId = result.appId;
-
-    console.log("generateClientToken:  clientToken = " + DATA.clientToken);
   } else {
-    console.log('generateClientToken Error:', JSON.stringify(result));
+    console.log('generateClientToken Error:', result);
   }
 }
 
 async function generateVerifiedToken() {
-  console.log("generateVerifiedToken:  clientToken = " + DATA.clientToken);
   const result = await AI_PLAYER.generateToken({ appId: DATA.appId, token: DATA.clientToken });
 
   if (result?.succeed) {
@@ -57,7 +54,7 @@ async function generateVerifiedToken() {
     DATA.tokenExpire = result.tokenExpire;
     DATA.defaultAI = result.defaultAI;
   } else {
-    console.log('generateVerifiedToken Error: ' + JSON.stringify(result));
+    console.log('generateVerifiedToken Error: ' + result);
   }
 }
 

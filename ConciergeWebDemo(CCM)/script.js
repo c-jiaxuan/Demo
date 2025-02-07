@@ -27,7 +27,6 @@ async function initSample() {
     top: 0,
     speed: 1.0,
   });
-
 }
 
 // =========================== AIPlayer Setup ================================ //
@@ -41,15 +40,12 @@ async function generateClientToken() {
   if (result?.succeed) {
     DATA.clientToken = result.token;
     DATA.appId = result.appId;
-
-    console.log("generateClientToken:  clientToken = " + DATA.clientToken);
   } else {
     console.log('generateClientToken Error:', JSON.stringify(result));
   }
 }
 
 async function generateVerifiedToken() {
-  console.log("generateVerifiedToken:  clientToken = " + DATA.clientToken);
   const result = await AI_PLAYER.generateToken({ appId: DATA.appId, token: DATA.clientToken });
 
   if (result?.succeed) {
@@ -87,9 +83,6 @@ function initAIPlayerEvent() {
   // TODO: AIPlayer Loading State Change Handling
   AI_PLAYER.onAIPlayerStateChanged = function (state) {
     if (state === 'playerLoadComplete') {
-      // document.getElementById('AIPlayerTexts').style.display = 'grid';
-      // To set custom voice
-      //const customVoice = AI_PLAYER.findCustomVoice("google/en-US/FEMALE_en-US-Neural2-C");
       const customVoice = AI_PLAYER.findCustomVoice("amazon/en-US/Female_Danielle");
 
       // Set custom voice will cause issues with the AI speaking
@@ -100,6 +93,7 @@ function initAIPlayerEvent() {
         console.log("custom voice is not set");
       }
 
+      // preloadAllMessages();
       countDictionary();
       preloadTest();
     }
@@ -150,12 +144,14 @@ function initAIPlayerEvent() {
         break;
       case AIEventType.AICLIPSET_PRELOAD_STARTED:
         typeName = 'AICLIPSET_PRELOAD_STARTED';
+        preloadFlag = false; // Set preloadFlag to False, to signal that server is not open
+        console.log("AIEventType.AICLIPSET_PRELOAD_STARTED => preloadFlag state: " + preloadFlag);
         // $("#AIPlayerStateText").text("AI started preparation to preload.");
         break;
       case AIEventType.AICLIPSET_PRELOAD_COMPLETED:
         typeName = 'AICLIPSET_PRELOAD_COMPLETED';
         preloadFlag = true; // Set preloadFlag to True, to signal that server is open
-        console.log("preloadFlag state: " + preloadFlag);
+        console.log("AIEventType.AICLIPSET_PRELOAD_COMPLETED => preloadFlag state: " + preloadFlag);
         preloadCount++;
         checkForFinishedPreloading();
         // $("#AIPlayerStateText").text("AI finished preparation to preload.");
@@ -175,6 +171,10 @@ function initAIPlayerEvent() {
       case AIEventType.AICLIPSET_PRELOAD_FAILED:
         typeName = 'AICLIPSET_PRELOAD_FAILED';
         // $("#AIPlayerStateText").text("AI preload failed.");
+        break;
+      case AIEventType.AICLIPSET_PLAY_FAILED:
+        typeName = 'AICLIPSET_PLAY_FAILED';
+        // $("#AIPlayerStateText").text("AI play failed.");
         break;
       case AIEventType.AICLIPSET_PLAY_FAILED:
         typeName = 'AICLIPSET_PLAY_FAILED';
