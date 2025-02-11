@@ -39,7 +39,13 @@ botMessages["wayfinding_msgs"] = [new AI_Message("Where would you like to head t
 // G04 - Both Hands
 // G05 - Hands together
 
-var bot_tone = "Professional";
+// LLMs API Settings
+// Change these to change the LLMs response
+var bot_app = "sgroots"; // Don't change this
+var bot_tone = "Succinct"; // Professional, Casual, Enthusiastic, Informational, Funny, Succinct
+var bot_format = "Summary"; // Summary, Report, Bullet Points, LinkedIn Post, Email
+var bot_language = "English";
+var bot_followup = true;
 
 // Used to store followup questions
 var g_bot_response = null;
