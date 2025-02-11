@@ -47,6 +47,8 @@ var bot_format = "Summary"; // Summary, Report, Bullet Points, LinkedIn Post, Em
 var bot_language = "English";
 var bot_followup = true;
 
+var llm_summarise_api_url = 'https://gramener.com/docsearch/summarize';
+
 // Used to store followup questions
 var g_bot_response = null;
 var g_follow_up_questions = null;
@@ -208,7 +210,7 @@ function botResponse(response) {
             prompt = false;
         } else {
             // bot_reply = getRandomElement(botMessages["default_msgs"]);
-            var response = postAPI(response, bot_tone);
+            var response = postAPI(response);
             prompt = false;
         }
     } else {
@@ -301,22 +303,21 @@ function botMessage(setMessage, gesture) {
 }
 
 
-function postAPI(message, tone) {
+function postAPI(message) {
     console.log("posting API...");
 
-    const url = 'https://gramener.com/docsearch/summarize';
     const payload = {
-        "app": "sgroots",
+        "app": bot_app,
         "q": message,
         "context": "Add context from matches. Use the format:\n\nDOC_ID: 1\nTITLE: (title)\n(page_content)\n\nDOC_ID: 2\nTITLE: ...\n...",
-        "Followup": 1,
-        "Tone": tone,
-        "Format": "Summary",
-        "Language": "English"
+        "Followup": bot_followup,
+        "Tone": bot_tone,
+        "Format": bot_format,
+        "Language": bot_language
     };
 
     // Make API call
-    fetch(url, {
+    fetch(llm_summarise_api_url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -368,8 +369,6 @@ function postAPI(message, tone) {
         console.error('Error:', error);
     });
 }
-
-
 
 function getRandomElement(arr) {
     const randomIndex = Math.floor(Math.random() * arr.length);
