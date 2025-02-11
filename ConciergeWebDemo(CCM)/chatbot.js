@@ -290,8 +290,27 @@ function botMessage(setMessage, gesture) {
                 console.log("Follow up questions : " + g_follow_up_questions);
 
                 if (g_follow_up_questions != null) {
+                    const followupMessageElemenet = document.createElement('div');
+                    followupMessageElemenet.className = 'message bot';
+                    followupMessageElemenet.innerHTML = `<span></span><div class="message-time">${dateString} ${timeString}</div>`;
+                    chatBody.appendChild(followupMessageElemenet);
+                    const followupSpan = followupMessageElemenet.querySelector('span');
+
+                    let header = document.createElement("p");
+                    header.textContent = "Some common follow-up questions:";
+                    header.style.fontWeight = "bold"; // Make header bold
+                    followupSpan.append(header);
+                    
+                    // Loop through follow-up questions and create bullet points
+                    g_follow_up_questions.forEach(question => {
+                        let li = document.createElement("li");
+                        li.textContent = question;
+                        followupSpan.appendChild(li);
+                    });
+                    
+
                     console.log("Follow up questions found, sending follow up question...");
-                    botMessage(g_follow_up_questions[0]);
+                    //botMessage(g_follow_up_questions[0]);
                     g_follow_up_questions = null;
                 }
             }
