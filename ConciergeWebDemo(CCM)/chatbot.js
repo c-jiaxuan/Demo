@@ -22,6 +22,7 @@ botMessages["default_msgs"] = [new AI_Message("I am not sure what you have sent,
 botMessages["prompt_msgs"] = [new AI_Message("Let me know if you require any further help!", "G02"),
                             new AI_Message("If you have any other questions, don't hestiate to ask me!")
                             ];
+botMessages["followup_prompt"] = new AI_Message("Here are some follow up questions you might be interested to ask!", "G02");
 botMessages["tour_setup_msgs"] = [new AI_Message("Have you been to this museum before?", "G02"),
                                 new AI_Message("Please enter your age group."),
                                 new AI_Message("Select your interests and what you wish to see in your tour.", "G02"),
@@ -255,7 +256,6 @@ function botResponse(response) {
 }
 
 // Takes in a message to be sent by the bot
-// Takes in a message to be sent by the bot
 function botMessage(setMessage, gesture) {
     setTimeout(() => {
         speak(setMessage.toString(), gesture);
@@ -279,7 +279,10 @@ function botMessage(setMessage, gesture) {
                 // After typing finishes, swap to HTML with bold formatting
                 botSpan.innerHTML = setMessage.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
 
+                console.log("Follow up questions : " + g_follow_up_questions);
+
                 if (g_follow_up_questions != null) {
+                    console.log("Follow up questions found, sending follow up question...");
                     botMessage(g_follow_up_questions[0]);
                     g_follow_up_questions = null;
                 }
@@ -349,14 +352,11 @@ function postAPI(message, tone) {
         // Send the message
         botMessage(messageContent);
 
+        g_bot_response = messageContent;
+        g_follow_up_questions = followUpQuestions;
+
         // setTimeout - botMessage
         // if user havent inputted anything in 20 seconds
-
-        // Return the bots response
-        return {
-            bot_reply: messageContent,
-            followup: followUpQuestions
-        };
     })
     .catch(error => {
         console.error('Error:', error);

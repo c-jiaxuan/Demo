@@ -17,6 +17,7 @@ botMessages["default_msgs"] = [new AI_Message("I am not sure what you have sent,
                                 new AI_Message("I don't quite understand what you are saying, please try again."),
                                 new AI_Message("I am sorry but can you please repeat the question?")
                                 ];
+botMessages["followup_prompt"] = new AI_Message("Here are some follow up questions you might be interested to ask!", "G02");
 botMessages["greeting_msg"] = new AI_Message("Hi! Let me know if you have any questions, you can input your questions into the input box, or using the \"Speak to AI\" button", "G02");
 botMessages["prompt_msgs"] = [new AI_Message("Let me know if you require any further help!", "G04"),
                             new AI_Message("If you have any other questions, don't hestiate to ask me!")
@@ -221,6 +222,7 @@ function botMessage(setMessage, gesture) {
                 botSpan.innerHTML = setMessage.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
 
                 if (g_follow_up_questions != null) {
+                    console.log("Follow up questions found, sending follow up question...");
                     botMessage(g_follow_up_questions[0]);
                     g_follow_up_questions = null;
                 }
