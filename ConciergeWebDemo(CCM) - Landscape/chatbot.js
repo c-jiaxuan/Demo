@@ -8,20 +8,36 @@ class AI_Message {
 
 var substring_1 = "prisoners of war";
 var substring_2 = "liberation";
+var substring_3 = "wayfinding";
 
 let botMessages = {};   // Dictionary to store all preset bot messages
-botMessages["start_msg"] = new AI_Message("Hello! How can I help you for this tour today?", "G05");
+botMessages["start_msg"] = new AI_Message("Hello! Welcome to the Asian Civilisation Museum. How can I help you today?", "G05");
+botMessages["greeting_msg"] = new AI_Message("Hi! Let me know if you have any questions, you can input your questions into the input box, or by using the \"Speak to AI\" button");
 botMessages["pow_response"] = new AI_Message("Before the war, Changi had been a formidable military garrison, but with surrender it now became a place of isolation and numbing drudgery for thousands of new prisoners of war (POWs). The Japanese left the day-to-day running of the camps to the prisoners due to their sheer numbers, communicating instead through their officers or appointed representatives. To keep the camps in a liveable state, laborious chores and duties were shared among internees, from daily jobs like cooking and cleaning to the disposal of night soil. Precious little time was left over for personal activities before the lights went out each night. For the internees of Changi, the prospect of imprisonment was grim, but they were determined to endure what lay ahead.", "G02");
 botMessages["liberation_response"] = new AI_Message("By mid-1945, Germany had surrendered and the Allied forces were poised for an invasion of Japan. Just days after atomic bombs devastated the Japanese cities of Hiroshima and Nagasaki, Emperor Hirohito formally announced the unconditional surrender of all Japanese forces on 15 August 1945. Stunned by their defeat, some Japanese soldiers did not immediately obey their orders, unable to accept the shame of surrender. All the soldiers were eventually imprisoned as the Allied POWs had been in 1942. The internees, who had by now waited three and a half years for liberation, experienced everything from joy to relief. The Union Jack, carefully hidden from the Japanese during imprisonment, was raised once more as Allied soldiers returned to Singapore.", "G02");
 botMessages["default_msgs"] = [new AI_Message("I am not sure what you have sent, please try again."),
                                 new AI_Message("I don't quite understand what you are saying, please try again."),
                                 new AI_Message("I am sorry but can you please repeat the question?")
                                 ];
-botMessages["followup_prompt"] = new AI_Message("Here are some follow up questions you might be interested to ask!", "G02");
-botMessages["greeting_msg"] = new AI_Message("Hi! Let me know if you have any questions, you can input your questions into the input box, or using the \"Speak to AI\" button", "G02");
-botMessages["prompt_msgs"] = [new AI_Message("Let me know if you require any further help!", "G04"),
+botMessages["prompt_msgs"] = [new AI_Message("Let me know if you require any further help!", "G02"),
                             new AI_Message("If you have any other questions, don't hestiate to ask me!")
                             ];
+botMessages["followup_prompt"] = new AI_Message("Here are some follow up questions you might be interested to ask!", "G02");
+botMessages["tour_setup_msgs"] = [new AI_Message("Have you been to this museum before?", "G02"),
+                                new AI_Message("Please enter your age group."),
+                                new AI_Message("Select your interests and what you wish to see in your tour.", "G02"),
+                                new AI_Message("Indicate your preferred time slots."),
+                                new AI_Message("Here are you preferences for the customized tour.", "G04")
+                                ];
+botMessages["wayfinding_msgs"] = [new AI_Message("Where would you like to head to?"),
+                                new AI_Message("This is how to get to your destination", "G04"),
+                                new AI_Message("There does not seem to be a destination with that name.")
+                                ];
+
+// GO2 - Left Hand
+// GO3 - Right Hand
+// G04 - Both Hands
+// G05 - Hands together
 
 // LLMs API Settings
 // Change these to change the LLMs response
@@ -40,12 +56,14 @@ var g_follow_up_questions = null;
 // True = server is open to synthesize, False = server is occupied
 // The flag to control execution
 let preloadFlag = false; 
-
 // To track how many messages have been preloaded
 var preloadCount = 0;
 var totalMessages = 0;
 
 let startedChat = false;
+
+// To track whether the user is in the wayfinding mode
+let wayfindingMode = false;
 
 const bot_typing_speed = 65;
 
@@ -55,6 +73,13 @@ const userInput = document.getElementById('input');
 const now = new Date();
 const dateString = now.toLocaleDateString();
 const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+// To store the destination for wayfinding
+var destination = "";
+
+// Key in destination from chatbot
+// Open wayfinding modal
+// Send message with destination to wayfinding iframe
 
 // Happens during AI_PLAYER.onAIPlayerStateChanged.state === 'playerLoadComplete'
 async function preloadAllMessages() {
@@ -70,14 +95,35 @@ async function preloadAllMessages() {
                 // If the value is an array, loop through its elements
                 value.forEach(async (item, index) => {
                     //console.log(`  [${index}] ${item}`);
-                    await sendPreload(item);
+                    const canPreload = AI_PLAYER.canPreload(callback = () => { });
+                    console.log("canPreload: " + canPreload);
+                    await sendPreload(item.message, item.gesture);
                     //await AI_PLAYER.preload(item);
                 });
             } else {
                 // If the value is not an array, log it directly
                 //console.log(`Key: ${key}, Value: ${value}`);
-                await sendPreload(value);
+                const canPreload = AI_PLAYER.canPreload(callback = () => { });
+                console.log("canPreload: " + canPreload);
+                await sendPreload(value.message, value.gesture);
                 //await AI_PLAYER.preload(value);
+            }
+        }
+    }
+}
+
+function countDictionary() {
+    // Loop through the dictionary
+    for (const key in botMessages) {
+        if (botMessages.hasOwnProperty(key)) {
+            const value = botMessages[key];
+            if (Array.isArray(value)) {
+                // If the value is an array, loop through its elements
+                value.forEach(async (item, index) => {
+                    totalMessages++;
+                });
+            } else {
+                totalMessages++;
             }
         }
     }
@@ -109,35 +155,25 @@ function preloadTest() {
     AI_PLAYER.preload(preloadArr);
 }
 
-function countDictionary() {
-    // Loop through the dictionary
-    for (const key in botMessages) {
-        if (botMessages.hasOwnProperty(key)) {
-            const value = botMessages[key];
-            if (Array.isArray(value)) {
-                // If the value is an array, loop through its elements
-                value.forEach(async (item, index) => {
-                    totalMessages++;
-                });
-            } else {
-                totalMessages++;
-            }
-        }
-    }
-}
-
 function checkForFinishedPreloading() {
     console.log("Checking if preloaded finish against " + totalMessages + " items ...");
     if (preloadCount >= totalMessages) {
         console.log("Finished preloading all " + preloadCount + " messages");
-        beginChat();
+        speak(botMessages["start_msg"].message, botMessages["start_msg"].gesture);
     }
 }
 
-function beginChat() {
-    console.log("Beginning chat");
+function tourSetupSpeak(stage) {
+    console.log("tourSetupSpeak: " + botMessages["tour_setup_msgs"][stage]);
+    speak(botMessages["tour_setup_msgs"][stage].message, botMessages["tour_setup_msgs"][stage].gesture);
+}
 
-    botMessage(botMessages["start_msg"].message, botMessages["start_msg"].gesture);
+function beginChat() {
+    if (!startedChat) {
+        console.log("Beginning chat");
+        botMessage(botMessages["greeting_msg"].message, botMessages["greeting_msg"].gesture);
+        startedChat = true;
+    }
 }
 
 function sendMessage() {
@@ -162,17 +198,28 @@ function botResponse(response) {
     var bot_reply = null;
     var prompt = true;
     var lowerCase_response = response.toLowerCase();
-    if (lowerCase_response.includes(substring_1)) {
-        bot_reply = botMessages["pow_response"];
-    }
-    else if (lowerCase_response.includes(substring_2)) {
-        bot_reply = botMessages["liberation_response"];
-    }
-    else {
-        // botMsg = getRandomElement(botMessages["default_msgs"]);
-        // bot_reply = botMsg.message;
-        // bot_gst = botMsg.gesture;
-        var bot_response = postAPI(response, bot_tone);
+    var code = null;
+    if (!wayfindingMode) {
+        if (lowerCase_response.includes(substring_1)) {
+            bot_reply = botMessages["pow_response"];
+        } else if (lowerCase_response.includes(substring_2)) {
+            bot_reply = botMessages["liberation_response"];
+        } else if (includeString(response, 'wayfinding')) {
+            bot_reply = botMessages['wayfinding_msgs'][0];
+            wayfindingMode = true;
+            prompt = false;
+        } else {
+            // bot_reply = getRandomElement(botMessages["default_msgs"]);
+            var response = postAPI(response);
+            prompt = false;
+        }
+    } else {
+        code = checkDestinations(response.toLowerCase());
+        if (code == null) {
+            bot_reply = botMessages['wayfinding_msgs'][2];
+        } else {
+            bot_reply = botMessages['wayfinding_msgs'][1];
+        }
         prompt = false;
     }
 
@@ -188,13 +235,24 @@ function botResponse(response) {
             let i = 0;
             const interval = setInterval(() => {
                 if (i < bot_reply.message.length) {
-                    botSpan.innerHTML += bot_reply.message[i];
+                    botSpan.textContent += bot_reply.message[i];
                     i++;
                 } else {
                     clearInterval(interval);
                     if (prompt == true) {
                         var prompt_msg = getRandomElement(botMessages["prompt_msgs"])
                         botMessage(prompt_msg.message, prompt_msg.gesture);
+                    }
+                    if (wayfindingMode && code != null) {
+                        openWayfinding();
+                        // Handle messages from the iframe to update the URL
+                        window.addEventListener('message', (event) => {
+                            if (event.data.type === 'app-loaded') {
+                                console.log("Iframe has loaded!");
+                                setDestination(code);
+                                wayfindingMode = false;
+                            }
+                        });
                     }
                 }
             }, bot_typing_speed)
@@ -229,6 +287,8 @@ function botMessage(setMessage, gesture) {
                 // After typing finishes, swap to HTML with bold formatting
                 botSpan.innerHTML = setMessage.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
 
+                console.log("Follow up questions : " + g_follow_up_questions);
+
                 if (g_follow_up_questions != null) {
                     const followupMessageElemenet = document.createElement('div');
                     followupMessageElemenet.className = 'message bot';
@@ -247,6 +307,8 @@ function botMessage(setMessage, gesture) {
                         li.textContent = question;
                         followupSpan.appendChild(li);
                     });
+                    
+
                     console.log("Follow up questions found, sending follow up question...");
                     //botMessage(g_follow_up_questions[0]);
                     g_follow_up_questions = null;
@@ -260,8 +322,7 @@ function botMessage(setMessage, gesture) {
 }
 
 
-
-function postAPI(message, tone) {
+function postAPI(message) {
     console.log("posting API...");
 
     const payload = {
@@ -310,9 +371,6 @@ function postAPI(message, tone) {
             messageContent = messageContent.substring(0, splitIndex).trim(); // Keep only the main content
         }
 
-        // Apply bold formatting to text enclosed in "**"
-        messageContent = messageContent.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
-
         // Output results
         console.log("Cleaned Message Content:", messageContent);
         console.log("Follow-Up Questions:", followUpQuestions);
@@ -322,6 +380,9 @@ function postAPI(message, tone) {
 
         g_bot_response = messageContent;
         g_follow_up_questions = followUpQuestions;
+
+        // setTimeout - botMessage
+        // if user havent inputted anything in 20 seconds
     })
     .catch(error => {
         console.error('Error:', error);
